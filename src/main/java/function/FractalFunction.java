@@ -16,15 +16,25 @@ public class FractalFunction {
 
     public SimpleStringProperty functionString = new SimpleStringProperty("No Function");
 
+    public boolean changed = true;
+
 
     public void addN(float[] n){
         nullStellen.add(n);
         functionString.set(toString());
+        changed = true;
     }
 
     public void removeN(int n){
         nullStellen.remove(n);
         functionString.set(toString());
+        changed = true;
+    }
+
+    public void clearN(){
+        nullStellen.clear();
+        functionString.set(toString());
+        changed = true;
     }
 
     @Override
@@ -54,7 +64,7 @@ public class FractalFunction {
                 }
             }
             function = v;
-            System.out.println(function);
+            //System.out.println(function);
         } else {
             function = null;
             System.out.println("No Function");
@@ -66,18 +76,20 @@ public class FractalFunction {
             return -2;
         }
         int iter = -1;
+        float real = 0, img = 0;
         L:
         for (int i = 0; i < reps; i++){
-            variable[0].setValue(point[0]);
-            variable[1].setValue(point[1]);
+            variable[0].setValue(real);
+            variable[1].setValue(img);
             Zahl[] tmp = function.evaluate();
-            point[0] = tmp[0].getValue();
-            point[1] = tmp[1].getValue();
-            if (Math.pow(point[0], 2)+Math.pow(point[1], 2) > border){
+            real = tmp[0].getValue() + point[0];
+            img = tmp[1].getValue() + point[1];
+            if (Math.pow(real, 2)+Math.pow(img, 2) > border){
                 iter = i;
                 break L;
             }
         }
+        //System.out.println(iter);
         return iter;
     }
 

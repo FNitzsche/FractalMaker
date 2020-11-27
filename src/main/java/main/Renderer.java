@@ -34,16 +34,24 @@ public class Renderer {
     }
 
     public void render(int px, int py, float x, float y, int reps, float border){
-        zoom(x, y);
-        if (px != oX || py != oY || image == null) {
-            image = new int[px][py];
-        }
-        for (int i = 0; i < px; i++){
-            for (int j = 0; j < py; j++){
-                float cX = (float) ((i/(double)px)*(xMaxZoom-xMinZoom)+xMinZoom);
-                float cY = (float) ((j/(double)py)*(yMaxZoom-yMinZoom)+yMinZoom);
-                int iter = app.fractalFunction.calculatePoint(new float[]{cX, cY}, reps, border);
-                image[i][j] = iter;
+        if (app.fractalFunction.changed || app.changed) {
+            app.changed = false;
+            app.fractalFunction.changed = false;
+            zoom(x, y);
+            if (px != oX || py != oY || image == null) {
+                image = new int[px][py];
+            }
+            L:
+            for (int i = 0; i < px; i++) {
+                for (int j = 0; j < py; j++) {
+                    float cX = (float) ((i / (double) px) * (xMaxZoom - xMinZoom) + xMinZoom);
+                    float cY = (float) ((j / (double) py) * (yMaxZoom - yMinZoom) + yMinZoom);
+                    int iter = app.fractalFunction.calculatePoint(new float[]{cX, cY}, reps, border);
+                    image[i][j] = iter;
+                    if (app.fractalFunction.changed || app.changed){
+                        break L;
+                    }
+                }
             }
         }
     }
@@ -53,10 +61,12 @@ public class Renderer {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                app.fractalFunction.createFunction();
                 render(px, py, app.xPos, app.yPos, app.reps, app.border);
+                //System.out.println("rendered");
             }
         };
-        exe.scheduleWithFixedDelay(runnable, 100, 20, TimeUnit.MILLISECONDS);
+        exe.scheduleWithFixedDelay(runnable, 100, 500, TimeUnit.MILLISECONDS);
     }
 
     public void endRendering(){
@@ -68,18 +78,23 @@ public class Renderer {
 
 
     public Image getImage(int iterMin, int iterMax, int x, int y){
-        int[][] cp = Arrays.copyOf(image, image.length);
         WritableImage wimg = new WritableImage(x, y);
-        for (int i = 0; i < x; i++){
-            for (int j = 0; j < y; j++){
-                int iter = cp[i][j];
-                if (iter >= iterMin && iter <= iterMax){
-                    float v = (iter -iterMin)/(iterMax-iterMin);
-                    wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
-                } else if (iter == -1){
-                    wimg.getPixelWriter().setColor(i, j, Color.color(0, 0.4, 0));
-                } else {
-                    wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
+        if (image != null){
+            int[][] cp = Arrays.copyOf(image, image.length);
+            for (int i = 0; i < x; i++) {
+                for (int j = 0; j < y; j++) {
+                    if (i < cp.length && j < cp[0].length) {
+                        int iter = cp[i][j];
+                        //System.out.println(iter);
+                        if (iter >= iterMin && iter <= iterMax) {
+                            float v = (iter - iterMin) / (float)(iterMax - iterMin);
+                            wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
+                        } else if (iter == -1) {
+                            wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
+                        } else {
+                            wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
+                        }
+                    }
                 }
             }
         }
