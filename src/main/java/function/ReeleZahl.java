@@ -26,20 +26,22 @@ public class ReeleZahl implements Zahl {
     }
 
     @Override
+    public void setValue(float v) {
+        value = v;
+    }
+
+    @Override
     public Zahl multiply(Zahl zahl) {
-        if (fest && zahl.isFinal()) {
             if (zahl.isComplex()) {
                 return new KomplexeZahl(value * zahl.getValue(), true);
             } else {
                 return new ReeleZahl(value * zahl.getValue(), true);
             }
-        }
-        return null;
     }
 
     @Override
     public Zahl add(Zahl zahl) {
-        if (!zahl.isComplex() && fest && zahl.isFinal()){
+        if (!zahl.isComplex()){
             return new ReeleZahl(value+zahl.getValue(), true);
         }
         return null;
@@ -48,9 +50,9 @@ public class ReeleZahl implements Zahl {
     @Override
     public String toString(){
         if (fest) {
-            return " +(" + value + ")";
+            return "(" + value + ")";
         } else {
-            return " +(r" + this.hashCode() + ")";
+            return "(r" + this.hashCode() + ")";
         }
     }
 }

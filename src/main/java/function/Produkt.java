@@ -1,5 +1,6 @@
 package function;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -9,6 +10,10 @@ public class Produkt {
 
     public Produkt(ArrayList<Zahl> faktoren){
         this.faktoren = faktoren;
+    }
+
+    public Produkt(Zahl zahl){
+        faktoren.add(zahl);
     }
 
     public void addFactor(Zahl zahl){
@@ -34,14 +39,30 @@ public class Produkt {
         return new SummenKlammer(list);
     }
 
+    public Zahl evaluate(){
+        Zahl ret = null;
+        for (Zahl zahl:faktoren){
+            if (ret == null){
+                ret = zahl;
+            } else {
+                ret = ret.multiply(zahl);
+            }
+        }
+        return ret;
+    }
+
     @Override
     public String toString(){
         String string = "";
         for(Zahl zahl: faktoren){
-            string.concat(zahl.toString());
+            if (string.equals("")){
+                string = string.concat(zahl.toString());
+            } else {
+                string = string.concat("*" + zahl.toString());
+            }
         }
 
-        return "+(" + string + ")";
+        return "(" + string + ")";
     }
 
 }
