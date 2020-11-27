@@ -11,7 +11,7 @@ public class AppStart extends Application {
     Renderer renderer = new Renderer(this);
     public float zoom = 0;
 
-    public float xPos = 0;
+    public float xPos = 0.5f;
     public float yPos = 0;
     public int reps = 10;
     public float border = 5f;

@@ -33,9 +33,16 @@ public class FractalScreenCon {
     Slider zoomSlider;
     @FXML
     Button clear;
+    @FXML
+    Slider itShow;
+    @FXML
+    Slider minIt;
 
     int iMin = 0;
     int iMax = 10;
+
+    float sX = 0;
+    float sY = 0;
 
     double xMaxZoom, xMinZoom, yMaxZoom, yMinZoom;
 
@@ -57,8 +64,19 @@ public class FractalScreenCon {
             app.border = (float) borderF.getValue();
             app.changed = true;
         });
+        minIt.setOnMouseReleased(t -> {
+            iMin = (int)minIt.getValue();
+            iMax = iMin+(int)itShow.getValue();
+        });
+        itShow.setOnMouseReleased(t -> {
+            iMin = (int)minIt.getValue();
+            iMax = iMin+(int)itShow.getValue();
+        });
         iterF.setOnAction(t -> {
-            app.reps = Integer.parseInt(iterF.getText());
+            int r = Integer.parseInt(iterF.getText());
+            app.reps = r;
+            minIt.setMax(r);
+            itShow.setMax(r);
             app.changed = true;
         });
     }
@@ -82,13 +100,22 @@ public class FractalScreenCon {
 
     public void mousePressed(MouseEvent e){
         if (!paintToggle.isSelected()){
-
+            System.out.println("press");
+            sX = (float) e.getX();
+            sY = (float) e.getY();
         }
     }
 
     public void mouseReleased(MouseEvent e){
         if (!paintToggle.isSelected()){
-
+            System.out.println("move");
+            double mX = (float)((sX-e.getX())/canvas.getWidth())*(2);
+            double mY = (float)((sY-e.getY())/canvas.getWidth())*(2);
+            float z = (float) Math.pow(10, app.zoom);
+            app.xPos+=mX/z;
+            app.yPos+=mY/z;
+            System.out.println(app.yPos + ":" + app.xPos);
+            app.changed = true;
         } else {
             zoom(app.xPos, app.yPos);
             float cX = (float) ((e.getX() / (double) canvas.getWidth()) * (xMaxZoom - xMinZoom) + xMinZoom);
@@ -96,7 +123,6 @@ public class FractalScreenCon {
             app.fractalFunction.addN(new float[]{cX, cY});
             System.out.println("pointed");
         }
-        System.out.println("rel");
     }
 
     private void zoom( double mX, double mY){
