@@ -1,16 +1,19 @@
 package main;
 
 import function.FractalFunction;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 
+import javax.imageio.ImageIO;
 import javax.naming.Binding;
 import javax.script.Bindings;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +40,12 @@ public class FractalScreenCon {
     Slider itShow;
     @FXML
     Slider minIt;
+    @FXML
+    TextField sRe;
+    @FXML
+    TextField sIm;
+    @FXML
+    Button render;
 
     int iMin = 0;
     int iMax = 10;
@@ -79,6 +88,15 @@ public class FractalScreenCon {
             itShow.setMax(r);
             app.changed = true;
         });
+        sRe.setOnAction(t -> {
+            app.startReel = Float.parseFloat(sRe.getText());
+            app.changed = true;
+        });
+        sIm.setOnAction(t -> {
+            app.startIm = Float.parseFloat(sIm.getText());
+            app.changed = true;
+        });
+        render.setOnAction(t -> saveRender());
     }
 
     public void startPainting(){
@@ -133,4 +151,31 @@ public class FractalScreenCon {
         yMaxZoom = mY + 1/Math.max(0.01f, z);
         yMinZoom = mY - 1/Math.max(0.01f, z);
     }
+
+    public void saveRender(){
+        app.renderer.endRendering();
+        stopPainting();
+        app.renderer.renderImage(2160, 2160, true);
+        File theDir = new File("G:/ImageSaveFractalSecond");
+        if (!theDir.exists()){
+            theDir.mkdirs();
+        }
+        for (int i = 0; i < app.reps; i++){
+            minIt.setValue(i);
+            iMin = (int)minIt.getValue();
+            iMax = iMin+(int)itShow.getValue();
+            Image img = app.renderer.getImage(iMin, iMax, 2160, 2160);
+            File outputFile = new File("G:/ImageSaveFractalSecond/FractalImg" + i + ".png");
+            BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
+            try {
+                ImageIO.write(bImage, "png", outputFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println("saved");
+        app.renderer.startRendering((int)canvas.getWidth(), (int)canvas.getHeight());
+        startPainting();
+    }
+
 }

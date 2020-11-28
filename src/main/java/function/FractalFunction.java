@@ -3,6 +3,8 @@ package function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableStringValue;
 import jdk.tools.jaotc.Main;
+import main.AppStart;
+import main.FractalScreenCon;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,15 @@ public class FractalFunction {
     public SimpleStringProperty functionString = new SimpleStringProperty("No Function");
 
     public boolean changed = true;
+
+    float sIm = 0;
+    float sRe = 0;
+
+    AppStart app;
+
+    public FractalFunction(AppStart appStart){
+        app = appStart;
+    }
 
 
     public void addN(float[] n){
@@ -51,6 +62,8 @@ public class FractalFunction {
     }
 
     public void createFunction(){
+        sIm = app.startIm;
+        sRe = app.startReel;
         if (nullStellen.size() > 0){
             SummenKlammer v = null;
             for (float[] n: nullStellen){
@@ -76,7 +89,7 @@ public class FractalFunction {
             return -2;
         }
         int iter = -1;
-        float real = 0, img = 0;
+        float real = sRe, img = sIm;
         L:
         for (int i = 0; i < reps; i++){
             variable[0].setValue(real);

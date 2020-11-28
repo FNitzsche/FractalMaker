@@ -33,13 +33,15 @@ public class Renderer {
         yMinZoom = mY - 1/Math.max(0.01f, z);
     }
 
-    public void render(int px, int py, float x, float y, int reps, float border){
-        if (app.fractalFunction.changed || app.changed) {
+    public void render(int px, int py, float x, float y, int reps, float border, boolean save){
+        if (app.fractalFunction.changed || app.changed || save) {
             app.changed = false;
             app.fractalFunction.changed = false;
             zoom(x, y);
             if (px != oX || py != oY || image == null) {
                 image = new int[px][py];
+                oX = px;
+                oY = py;
             }
             L:
             for (int i = 0; i < px; i++) {
@@ -61,8 +63,7 @@ public class Renderer {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                app.fractalFunction.createFunction();
-                render(px, py, app.xPos, app.yPos, app.reps, app.border);
+                renderImage(px, py, false);
                 //System.out.println("rendered");
             }
         };
@@ -81,6 +82,7 @@ public class Renderer {
         WritableImage wimg = new WritableImage(x, y);
         if (image != null){
             int[][] cp = Arrays.copyOf(image, image.length);
+            //System.out.println(cp.length);
             for (int i = 0; i < x; i++) {
                 for (int j = 0; j < y; j++) {
                     if (i < cp.length && j < cp[0].length) {
@@ -88,6 +90,7 @@ public class Renderer {
                         //System.out.println(iter);
                         if (iter >= iterMin && iter <= iterMax) {
                             float v = (iter - iterMin) / (float)(iterMax - iterMin);
+                            v = Math.max(0, Math.min(1, v));
                             wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
                         } else if (iter == -1) {
                             wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
@@ -99,6 +102,11 @@ public class Renderer {
             }
         }
         return wimg;
+    }
+
+    public void renderImage(int px, int py, boolean save){
+        app.fractalFunction.createFunction();
+        render(px, py, app.xPos, app.yPos, app.reps, app.border, save);
     }
 
 }

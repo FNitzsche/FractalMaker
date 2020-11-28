@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class AppStart extends Application {
 
-    FractalFunction fractalFunction = new FractalFunction();
+    FractalFunction fractalFunction = new FractalFunction(this);
     FXMLLoad screen = new FXMLLoad("/main/FractalScreen.fxml", new FractalScreenCon(this));
     Renderer renderer = new Renderer(this);
     public float zoom = 0;
@@ -16,6 +16,9 @@ public class AppStart extends Application {
     public int reps = 10;
     public float border = 5f;
     boolean changed = false;
+
+    public float startReel = 0;
+    public float startIm = 0;
 
 
     @Override

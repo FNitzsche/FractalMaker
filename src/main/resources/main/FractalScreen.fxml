@@ -73,7 +73,7 @@
                   </Label>
                </children>
             </VBox>
-            <Button fx:id="render" disable="true" mnemonicParsing="false" text="RenderZoom">
+            <Button fx:id="render" mnemonicParsing="false" text="RenderWave">
                <font>
                   <Font size="18.0" />
                </font>
@@ -141,5 +141,17 @@
             </VBox>
          </children>
       </HBox>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <Label text="Startwert Reel" />
+            <TextField fx:id="sRe" text="0" />
+         </children>
+      </VBox>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+         <children>
+            <Label text="Startwert Imaginär" />
+            <TextField fx:id="sIm" text="0" />
+         </children>
+      </VBox>
    </children>
 </GridPane>
