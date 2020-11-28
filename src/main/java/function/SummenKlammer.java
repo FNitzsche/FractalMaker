@@ -1,6 +1,7 @@
 package function;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SummenKlammer {
 
@@ -101,6 +102,49 @@ public class SummenKlammer {
             return new Zahl[] {combinedReel, combinedImg};
         }
         return null;
+    }
+
+    public ArrayList<ArrayList<Integer>> transcribeFunction(ArrayList<Integer> pos){
+        HashMap<Integer, Integer> positions = new HashMap<>();
+        int lastPos = pos.size();
+        ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+        for (Produkt produkt:produkte){
+            ArrayList<Integer> tmp = new ArrayList<>();
+            for(Zahl zahl:produkt.getFactoren()){
+                int h = zahl.hashCode();
+                if (!positions.containsKey(h)){
+                    if (!pos.contains(h)) {
+                        positions.put(h, lastPos++);
+                    } else {
+                        positions.put(h, pos.indexOf(h));
+                    }
+                }
+                tmp.add(positions.get(h));
+            }
+            ret.add(tmp);
+        }
+        return ret;
+    }
+
+    public ArrayList<Float> transcribeValues(ArrayList<Integer> pos){
+        HashMap<Integer, Integer> positions = new HashMap<>();
+        int lastPos = pos.size();
+        ArrayList<Float> ret = new ArrayList<>();
+
+        for (Produkt produkt:produkte){
+            for(Zahl zahl:produkt.getFactoren()){
+                int h = zahl.hashCode();
+                if (!positions.containsKey(h)){
+                    if (!pos.contains(h)) {
+                        positions.put(h, lastPos++);
+                    } else {
+                        positions.put(h, pos.indexOf(h));
+                    }
+                    ret.add(positions.get(h), zahl.getValue());
+                }
+            }
+        }
+        return ret;
     }
 
     @Override
