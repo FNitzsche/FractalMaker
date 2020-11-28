@@ -4,7 +4,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +74,21 @@ public class Renderer {
         }
     }
 
+    ArrayList<Float> hues = new ArrayList<>();
+    int delta = 10;
+    Random rnd = new Random();
+    public void colorize(int delta, int number){
+        hues.clear();
+        this.delta = delta;
+        for (int i = 0; i < number; i++){
+            if (i == 0) {
+                hues.add(360 * rnd.nextFloat());
+            } else {
+                hues.add(hues.get(i-1) + 80 * (rnd.nextFloat()-0.2f));
+            }
+        }
+    }
+
 
 
     public Image getImage(int iterMin, int iterMax, int x, int y){
@@ -87,9 +104,18 @@ public class Renderer {
                         if (iter >= iterMin && iter <= iterMax) {
                             double v = (iter - iterMin) / (double)(iterMax - iterMin);
                             v = Math.max(0, Math.min(1, v));
-                            wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
-                        } else if (iter == -1) {
-                            wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
+                            //wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
+                            int index = iter/delta;
+                            int d = iter%delta;
+                            float hue = hues.get(index);
+                            if (hues.size() > index+1) {
+                                if (d > delta - 7) {
+                                    if (Math.abs(hue - hues.get(index + 1)) < Math.abs(hues.get(index+1)+360-hue)){
+                                        hue += ((hue-hues.get(index+1))/6)*(delta-d);
+                                    }
+                                }
+                            }
+                            wimg.getPixelWriter().setColor(i, j, Color.hsb((hue)%360, 1, v));
                         } else {
                             wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
                         }

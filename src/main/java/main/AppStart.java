@@ -30,6 +30,7 @@ public class AppStart extends Application {
         });
         fractalFunction.addN(new double[]{0, 0});
         fractalFunction.addN(new double[]{0, 0});
+        renderer.colorize(20, 12);
         renderer.startRendering((int)screen.getController(FractalScreenCon.class).canvas.getWidth(), (int)screen.getController(FractalScreenCon.class).canvas.getHeight());
         stage.show();
 
