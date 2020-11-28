@@ -9,16 +9,16 @@ public class AppStart extends Application {
     FractalFunction fractalFunction = new FractalFunction(this);
     FXMLLoad screen = new FXMLLoad("/main/FractalScreen.fxml", new FractalScreenCon(this));
     Renderer renderer = new Renderer(this);
-    public float zoom = 0;
+    public double zoom = 0;
 
-    public float xPos = 0.5f;
-    public float yPos = 0;
+    public double xPos = 0.5f;
+    public double yPos = 0;
     public int reps = 10;
-    public float border = 5f;
+    public double border = 5f;
     boolean changed = false;
 
-    public float startReel = 0;
-    public float startIm = 0;
+    public double startReel = 0;
+    public double startIm = 0;
 
 
     @Override
@@ -28,8 +28,8 @@ public class AppStart extends Application {
             renderer.endRendering();
             screen.getController(FractalScreenCon.class).stopPainting();
         });
-        fractalFunction.addN(new float[]{0, 0});
-        fractalFunction.addN(new float[]{0, 0});
+        fractalFunction.addN(new double[]{0, 0});
+        fractalFunction.addN(new double[]{0, 0});
         renderer.startRendering((int)screen.getController(FractalScreenCon.class).canvas.getWidth(), (int)screen.getController(FractalScreenCon.class).canvas.getHeight());
         stage.show();
 

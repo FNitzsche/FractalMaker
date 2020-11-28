@@ -25,7 +25,7 @@ public class Renderer {
     }
 
     private void zoom( double mX, double mY){
-        float z = (float) Math.pow(10, app.zoom);
+        double z = (double) Math.pow(10, app.zoom);
 
         xMaxZoom = mX + 1/Math.max(0.01f, z);
         xMinZoom = mX - 1/Math.max(0.01f, z);
@@ -33,7 +33,7 @@ public class Renderer {
         yMinZoom = mY - 1/Math.max(0.01f, z);
     }
 
-    public void render(int px, int py, float x, float y, int reps, float border, boolean save){
+    public void render(int px, int py, double x, double y, int reps, double border, boolean save){
             zoom(x, y);
             if (px != oX || py != oY || image == null) {
                 image = new int[px][py];
@@ -43,9 +43,9 @@ public class Renderer {
             L:
             for (int i = 0; i < px; i++) {
                 for (int j = 0; j < py; j++) {
-                    float cX = (float) ((i / (double) px) * (xMaxZoom - xMinZoom) + xMinZoom);
-                    float cY = (float) ((j / (double) py) * (yMaxZoom - yMinZoom) + yMinZoom);
-                    int iter = app.fractalFunction.calculatePoint(new float[]{cX, cY}, reps, border);
+                    double cX = (double) ((i / (double) px) * (xMaxZoom - xMinZoom) + xMinZoom);
+                    double cY = (double) ((j / (double) py) * (yMaxZoom - yMinZoom) + yMinZoom);
+                    int iter = app.fractalFunction.calculatePoint(new double[]{cX, cY}, reps, border);
                     image[i][j] = iter;
                     if (app.fractalFunction.changed || app.changed){
                         break L;
@@ -85,7 +85,7 @@ public class Renderer {
                         int iter = cp[i][j];
                         //System.out.println(iter);
                         if (iter >= iterMin && iter <= iterMax) {
-                            float v = (iter - iterMin) / (float)(iterMax - iterMin);
+                            double v = (iter - iterMin) / (double)(iterMax - iterMin);
                             v = Math.max(0, Math.min(1, v));
                             wimg.getPixelWriter().setColor(i, j, Color.color(v, 0, v));
                         } else if (iter == -1) {

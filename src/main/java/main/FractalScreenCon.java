@@ -50,8 +50,8 @@ public class FractalScreenCon {
     int iMin = 0;
     int iMax = 10;
 
-    float sX = 0;
-    float sY = 0;
+    double sX = 0;
+    double sY = 0;
 
     double xMaxZoom, xMinZoom, yMaxZoom, yMinZoom;
 
@@ -66,11 +66,11 @@ public class FractalScreenCon {
         startPainting();
         clear.setOnAction(t -> app.fractalFunction.clearN());
         zoomSlider.setOnMouseReleased(t -> {
-            app.zoom = (float) zoomSlider.getValue();
+            app.zoom = (double) zoomSlider.getValue();
             app.changed = true;
         });
         borderF.setOnMouseReleased(t -> {
-            app.border = (float) borderF.getValue();
+            app.border = (double) borderF.getValue();
             app.changed = true;
         });
         minIt.setOnMouseReleased(t -> {
@@ -89,11 +89,11 @@ public class FractalScreenCon {
             app.changed = true;
         });
         sRe.setOnAction(t -> {
-            app.startReel = Float.parseFloat(sRe.getText());
+            app.startReel = Double.parseDouble(sRe.getText());
             app.changed = true;
         });
         sIm.setOnAction(t -> {
-            app.startIm = Float.parseFloat(sIm.getText());
+            app.startIm = Double.parseDouble(sIm.getText());
             app.changed = true;
         });
         render.setOnAction(t -> saveRender());
@@ -119,32 +119,32 @@ public class FractalScreenCon {
     public void mousePressed(MouseEvent e){
         if (!paintToggle.isSelected()){
             System.out.println("press");
-            sX = (float) e.getX();
-            sY = (float) e.getY();
+            sX = (double) e.getX();
+            sY = (double) e.getY();
         }
     }
 
     public void mouseReleased(MouseEvent e){
         if (!paintToggle.isSelected()){
             System.out.println("move");
-            double mX = (float)((sX-e.getX())/canvas.getWidth())*(2);
-            double mY = (float)((sY-e.getY())/canvas.getWidth())*(2);
-            float z = (float) Math.pow(10, app.zoom);
+            double mX = (double)((sX-e.getX())/canvas.getWidth())*(2);
+            double mY = (double)((sY-e.getY())/canvas.getWidth())*(2);
+            double z = (double) Math.pow(10, app.zoom);
             app.xPos+=mX/z;
             app.yPos+=mY/z;
             System.out.println(app.yPos + ":" + app.xPos);
             app.changed = true;
         } else {
             zoom(app.xPos, app.yPos);
-            float cX = (float) ((e.getX() / (double) canvas.getWidth()) * (xMaxZoom - xMinZoom) + xMinZoom);
-            float cY = (float) ((e.getY() / (double) canvas.getHeight()) * (yMaxZoom - yMinZoom) + yMinZoom);
-            app.fractalFunction.addN(new float[]{cX, cY});
+            double cX = (double) ((e.getX() / (double) canvas.getWidth()) * (xMaxZoom - xMinZoom) + xMinZoom);
+            double cY = (double) ((e.getY() / (double) canvas.getHeight()) * (yMaxZoom - yMinZoom) + yMinZoom);
+            app.fractalFunction.addN(new double[]{cX, cY});
             System.out.println("pointed");
         }
     }
 
     private void zoom( double mX, double mY){
-        float z = (float) Math.pow(10, app.zoom);
+        double z = (double) Math.pow(10, app.zoom);
 
         xMaxZoom = mX + 1/Math.max(0.01f, z);
         xMinZoom = mX - 1/Math.max(0.01f, z);

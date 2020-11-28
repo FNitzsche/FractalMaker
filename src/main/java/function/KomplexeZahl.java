@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 public class KomplexeZahl implements Zahl {
 
-    float value = 0;
+    double value = 0;
     boolean fest = false;
 
-    public KomplexeZahl(float v, boolean fest){
+    public KomplexeZahl(double v, boolean fest){
         value = v;
         this.fest = fest;
     }
@@ -23,12 +23,12 @@ public class KomplexeZahl implements Zahl {
     }
 
     @Override
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
     @Override
-    public void setValue(float v) {
+    public void setValue(double v) {
         value = v;
     }
 

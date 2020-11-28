@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class FractalFunction {
 
-    public ArrayList<float[]> nullStellen = new ArrayList<>();
+    public ArrayList<double[]> nullStellen = new ArrayList<>();
 
     public SummenKlammer function = null;
 
@@ -20,8 +20,8 @@ public class FractalFunction {
 
     public boolean changed = true;
 
-    float sIm = 0;
-    float sRe = 0;
+    double sIm = 0;
+    double sRe = 0;
 
     AppStart app;
 
@@ -30,7 +30,7 @@ public class FractalFunction {
     }
 
 
-    public void addN(float[] n){
+    public void addN(double[] n){
         nullStellen.add(n);
         functionString.set(toString());
         changed = true;
@@ -51,7 +51,7 @@ public class FractalFunction {
     @Override
     public String toString(){
         String string = "";
-        for (float[] n:nullStellen){
+        for (double[] n:nullStellen){
             if (string.equals("")){
                 string = string.concat("(z-(" + n[0] + "+" + n[1] + "i))");
             } else {
@@ -66,7 +66,7 @@ public class FractalFunction {
         sRe = app.startReel;
         if (nullStellen.size() > 0){
             SummenKlammer v = null;
-            for (float[] n: nullStellen){
+            for (double[] n: nullStellen){
                 SummenKlammer stelle = new SummenKlammer(-n[0], -n[1], true);
                 stelle.addProdukt(new Produkt(variable[0]));
                 stelle.addProdukt(new Produkt(variable[1]));
@@ -84,12 +84,12 @@ public class FractalFunction {
         }
     }
 
-    public int calculatePoint(float[] point, int reps, float border){
+    public int calculatePoint(double[] point, int reps, double border){
         if (function == null){
             return -2;
         }
         int iter = -1;
-        float real = sRe, img = sIm;
+        double real = sRe, img = sIm;
         L:
         for (int i = 0; i < reps; i++){
             variable[0].setValue(real);

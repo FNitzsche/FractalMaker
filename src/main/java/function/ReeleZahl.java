@@ -2,10 +2,10 @@ package function;
 
 public class ReeleZahl implements Zahl {
 
-    float value = 0;
+    double value = 0;
     boolean fest = false;
 
-    public ReeleZahl(float v, boolean fest){
+    public ReeleZahl(double v, boolean fest){
         value = v;
         this.fest = fest;
     }
@@ -21,12 +21,12 @@ public class ReeleZahl implements Zahl {
     }
 
     @Override
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
     @Override
-    public void setValue(float v) {
+    public void setValue(double v) {
         value = v;
     }
 

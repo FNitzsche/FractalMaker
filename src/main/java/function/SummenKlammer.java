@@ -16,7 +16,7 @@ public class SummenKlammer {
         produkte.add(new Produkt(komplexeZahl));
     }
 
-    public SummenKlammer(float reeleZahl, float komplexeZahl, boolean fest){
+    public SummenKlammer(double reeleZahl, double komplexeZahl, boolean fest){
         produkte.add(new Produkt(new ReeleZahl(reeleZahl, fest)));
         produkte.add(new Produkt(new KomplexeZahl(komplexeZahl, fest)));
     }
@@ -42,8 +42,8 @@ public class SummenKlammer {
     }
 
     public Zahl[] evaluate(){
-        float vKomplex = 0;
-        float vReel = 0;
+        double vKomplex = 0;
+        double vReel = 0;
         for (Produkt produkt: produkte){
             Zahl zahl = produkt.evaluate();
             if (zahl != null) {
@@ -126,10 +126,10 @@ public class SummenKlammer {
         return ret;
     }
 
-    public ArrayList<Float> transcribeValues(ArrayList<Integer> pos){
+    public ArrayList<Double> transcribeValues(ArrayList<Integer> pos){
         HashMap<Integer, Integer> positions = new HashMap<>();
         int lastPos = pos.size();
-        ArrayList<Float> ret = new ArrayList<>();
+        ArrayList<Double> ret = new ArrayList<>();
 
         for (Produkt produkt:produkte){
             for(Zahl zahl:produkt.getFactoren()){
