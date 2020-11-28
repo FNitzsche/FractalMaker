@@ -12,7 +12,7 @@ public class FractalFunction {
 
     public ArrayList<float[]> nullStellen = new ArrayList<>();
 
-    SummenKlammer function = null;
+    public SummenKlammer function = null;
 
     Zahl[] variable = {new ReeleZahl(0, false), new KomplexeZahl(0, false)};
 

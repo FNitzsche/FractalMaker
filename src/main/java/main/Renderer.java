@@ -34,9 +34,6 @@ public class Renderer {
     }
 
     public void render(int px, int py, float x, float y, int reps, float border, boolean save){
-        if (app.fractalFunction.changed || app.changed || save) {
-            app.changed = false;
-            app.fractalFunction.changed = false;
             zoom(x, y);
             if (px != oX || py != oY || image == null) {
                 image = new int[px][py];
@@ -55,7 +52,6 @@ public class Renderer {
                     }
                 }
             }
-        }
     }
 
     public void startRendering(int px, int py){
@@ -105,8 +101,18 @@ public class Renderer {
     }
 
     public void renderImage(int px, int py, boolean save){
-        app.fractalFunction.createFunction();
-        render(px, py, app.xPos, app.yPos, app.reps, app.border, save);
+        if (app.fractalFunction.changed || app.changed || save) {
+            app.changed = false;
+            app.fractalFunction.changed = false;
+            app.fractalFunction.createFunction();
+            if (app.fractalFunction.function != null) {
+                System.out.println(app.fractalFunction.function);
+                app.fractalFunction.function.shortenInPlace();
+                System.out.println(app.fractalFunction.function);
+            }
+            render(px, py, app.xPos, app.yPos, app.reps, app.border, save);
+        }
+
     }
 
 }

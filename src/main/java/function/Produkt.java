@@ -8,6 +8,9 @@ public class Produkt {
 
     ArrayList<Zahl> faktoren= new ArrayList();
 
+    public boolean isNull = false;
+    public boolean fest = false;
+
     public Produkt(ArrayList<Zahl> faktoren){
         this.faktoren = faktoren;
     }
@@ -47,6 +50,43 @@ public class Produkt {
             } else {
                 ret = ret.multiply(zahl);
             }
+        }
+        return ret;
+    }
+
+    public Zahl shortenInPlace(){
+        Zahl ret = null;
+        boolean noNull = true;
+        boolean noLoose = true;
+        Zahl combined = null;
+        ArrayList<Zahl> toRemove = new ArrayList<>();
+
+        L:
+        for (Zahl zahl:faktoren){
+            if (zahl.isFinal() && zahl.getValue() == 0){
+                noNull = false;
+                break L;
+            } else if (zahl.isFinal()){
+                if (combined == null){
+                    combined = zahl;
+                    toRemove.add(zahl);
+                } else {
+                    combined = combined.multiply(zahl);
+                    toRemove.add(zahl);
+                }
+            } else if (!zahl.isFinal()){
+                noLoose = false;
+            }
+        }
+        isNull = !noNull;
+        fest = noLoose;
+
+        if (noLoose && noNull){
+
+            ret = combined;
+        } else if (noNull && combined != null){
+            faktoren.removeAll(toRemove);
+            faktoren.add(combined);
         }
         return ret;
     }

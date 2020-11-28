@@ -32,5 +32,23 @@ public class AppStart extends Application {
         fractalFunction.addN(new float[]{0, 0});
         renderer.startRendering((int)screen.getController(FractalScreenCon.class).canvas.getWidth(), (int)screen.getController(FractalScreenCon.class).canvas.getHeight());
         stage.show();
+
     }
+
+    public void comTest(){
+        Produkt pr = new Produkt(new ReeleZahl(2, true));
+        pr.addFactor(new KomplexeZahl(3, true));
+        pr.addFactor(new KomplexeZahl(0, true));
+        //Zahl z = pr.shortenInPlace();
+        //System.out.println(z);
+        System.out.println(pr);
+        System.out.println(pr.isNull);
+        System.out.println(pr.fest);
+        SummenKlammer kl = new SummenKlammer(pr);
+        kl.addProdukt(new Produkt(new ReeleZahl(5, true)));
+        System.out.println(kl);
+        kl.shortenInPlace();
+        System.out.println(kl);
+    }
+
 }

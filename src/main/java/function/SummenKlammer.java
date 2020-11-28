@@ -12,12 +12,16 @@ public class SummenKlammer {
 
     public SummenKlammer(Zahl reeleZahl, Zahl komplexeZahl){
         produkte.add(new Produkt(reeleZahl));
-        produkte.add(new Produkt(reeleZahl));
+        produkte.add(new Produkt(komplexeZahl));
     }
 
     public SummenKlammer(float reeleZahl, float komplexeZahl, boolean fest){
         produkte.add(new Produkt(new ReeleZahl(reeleZahl, fest)));
         produkte.add(new Produkt(new KomplexeZahl(komplexeZahl, fest)));
+    }
+
+    public SummenKlammer(Produkt produkt){
+        produkte.add(produkt);
     }
 
     public void addProdukt(Produkt produkt){
@@ -50,6 +54,53 @@ public class SummenKlammer {
             }
         }
         return new Zahl[]{new ReeleZahl(vReel, true), new KomplexeZahl(vKomplex, true)};
+    }
+
+    public Zahl[] shortenInPlace(){
+        boolean noLoose = true;
+        Zahl combinedReel = null;
+        Zahl combinedImg = null;
+        ArrayList<Produkt> toRemove = new ArrayList<>();
+
+        L:
+        for (Produkt produkt:produkte){
+            Zahl zahl = produkt.shortenInPlace();
+            if (zahl != null){
+                if (zahl.isComplex()){
+                    if (combinedImg == null){
+                        combinedImg = zahl;
+                    } else {
+                        combinedImg = combinedImg.add(zahl);
+                    }
+                } else {
+                    if (combinedReel == null){
+                        combinedReel = zahl;
+                    } else {
+                        combinedReel = combinedReel.add(zahl);
+                    }
+                }
+                toRemove.add(produkt);
+            } else {
+                if (produkt.isNull){
+                    toRemove.add(produkt);
+                } else if (!produkt.fest){
+                    noLoose = false;
+                }
+            }
+        }
+
+        produkte.removeAll(toRemove);
+        if (combinedReel != null) {
+            produkte.add(new Produkt(combinedReel));
+        }
+        if (combinedImg != null) {
+            produkte.add(new Produkt(combinedImg));
+        }
+
+        if (noLoose) {
+            return new Zahl[] {combinedReel, combinedImg};
+        }
+        return null;
     }
 
     @Override
