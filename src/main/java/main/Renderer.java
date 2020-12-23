@@ -115,7 +115,7 @@ public class Renderer {
                                     }
                                 }
                             }
-                            wimg.getPixelWriter().setColor(i, j, Color.hsb((hue)%360, 1, v));
+                            wimg.getPixelWriter().setColor(i, j, Color.hsb((hue)%360, 1, Math.max(0, Math.min(1,v))));
                         } else {
                             wimg.getPixelWriter().setColor(i, j, Color.color(0, 0, 0));
                         }
