@@ -7,15 +7,18 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class Renderer {
 
     AppStart app;
 
-    int[][] image = null;
+    //int[][] image = null;
+    ConcurrentHashMap<String, Integer> image = null;
     int oX, oY;
 
     double xMaxZoom, xMinZoom, yMaxZoom, yMinZoom;
@@ -38,22 +41,38 @@ public class Renderer {
     public void render(int px, int py, double x, double y, int reps, double border, boolean save){
             zoom(x, y);
             if (px != oX || py != oY || image == null) {
-                image = new int[px][py];
+                //image = new int[px][py];
+                image = new ConcurrentHashMap<>();
                 oX = px;
                 oY = py;
             }
-            L:
+
+            ArrayList<int[]> tmp = new ArrayList<>();
+
             for (int i = 0; i < px; i++) {
                 for (int j = 0; j < py; j++) {
-                    double cX = (double) ((i / (double) px) * (xMaxZoom - xMinZoom) + xMinZoom);
-                    double cY = (double) ((j / (double) py) * (yMaxZoom - yMinZoom) + yMinZoom);
-                    int iter = app.fractalFunction.calculatePoint(new double[]{cX, cY}, reps, border);
-                    image[i][j] = iter;
-                    if (app.fractalFunction.changed || app.changed){
-                        break L;
-                    }
+                    tmp.add(new int[]{i, j});
                 }
             }
+
+            ArrayList<int[]> iters = tmp.parallelStream().map(t -> {
+                int i = t[0];
+                int j = t[1];
+                double cX = (double) ((i / (double) px) * (xMaxZoom - xMinZoom) + xMinZoom);
+                double cY = (double) ((j / (double) py) * (yMaxZoom - yMinZoom) + yMinZoom);
+                int iter = app.fractalFunction.calculatePoint(new double[]{cX, cY}, reps, border);
+                //System.out.println(iter);
+                image.put(i + ";" + j, iter);
+                return new int[]{i, j, iter};
+            }).collect(Collectors.toCollection(ArrayList::new));
+
+            /*L:
+            for (int[] iter: iters){
+                image[iter[0]][iter[1]] = iter[2];
+                if (app.fractalFunction.changed || app.changed){
+                    break L;
+                }
+            }*/
     }
 
     public void startRendering(int px, int py){
@@ -94,12 +113,12 @@ public class Renderer {
     public Image getImage(int iterMin, int iterMax, int x, int y){
         WritableImage wimg = new WritableImage(x, y);
         if (image != null){
-            int[][] cp = Arrays.copyOf(image, image.length);
+            //int[][] cp = Arrays.copyOf(image, image.length);
             //System.out.println(cp.length);
             for (int i = 0; i < x; i++) {
                 for (int j = 0; j < y; j++) {
-                    if (i < cp.length && j < cp[0].length) {
-                        int iter = cp[i][j];
+                    if (image.containsKey(i + ";" + j)/*i < cp.length && j < cp[0].length*/) {
+                        int iter = image.get(i + ";" + j);//cp[i][j];
                         //System.out.println(iter);
                         if (iter >= iterMin && iter <= iterMax) {
                             double v = (iter - iterMin) / (double)(iterMax - iterMin);

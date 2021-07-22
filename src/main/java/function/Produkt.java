@@ -42,13 +42,13 @@ public class Produkt {
         return new SummenKlammer(list);
     }
 
-    public Zahl evaluate(){
+    public Zahl evaluate(int hash){
         Zahl ret = null;
         for (Zahl zahl:faktoren){
             if (ret == null){
                 ret = zahl;
             } else {
-                ret = ret.multiply(zahl);
+                ret = ret.multiply(zahl, hash);
             }
         }
         return ret;
@@ -71,7 +71,7 @@ public class Produkt {
                     combined = zahl;
                     toRemove.add(zahl);
                 } else {
-                    combined = combined.multiply(zahl);
+                    combined = combined.multiply(zahl, -1);
                     toRemove.add(zahl);
                 }
             } else if (!zahl.isFinal()){

@@ -41,16 +41,16 @@ public class SummenKlammer {
         return new SummenKlammer(list);
     }
 
-    public Zahl[] evaluate(){
+    public Zahl[] evaluate(int hash){
         double vKomplex = 0;
         double vReel = 0;
         for (Produkt produkt: produkte){
-            Zahl zahl = produkt.evaluate();
+            Zahl zahl = produkt.evaluate(hash);
             if (zahl != null) {
                 if (zahl.isComplex()) {
-                    vKomplex += zahl.getValue();
+                    vKomplex += zahl.getValue(hash);
                 } else {
-                    vReel += zahl.getValue();
+                    vReel += zahl.getValue(hash);
                 }
             }
         }
@@ -71,13 +71,13 @@ public class SummenKlammer {
                     if (combinedImg == null){
                         combinedImg = zahl;
                     } else {
-                        combinedImg = combinedImg.add(zahl);
+                        combinedImg = combinedImg.add(zahl, -1);
                     }
                 } else {
                     if (combinedReel == null){
                         combinedReel = zahl;
                     } else {
-                        combinedReel = combinedReel.add(zahl);
+                        combinedReel = combinedReel.add(zahl, -1);
                     }
                 }
                 toRemove.add(produkt);

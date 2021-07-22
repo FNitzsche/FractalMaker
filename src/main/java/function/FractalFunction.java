@@ -59,6 +59,10 @@ public class FractalFunction {
     }
 
     public void createFunction(){
+
+        variable[0].clearValues();
+        variable[1].clearValues();
+
         sIm = app.startIm;
         sRe = app.startReel;
         if (nullStellen.size() > 0){
@@ -87,13 +91,15 @@ public class FractalFunction {
         }
         int iter = -1;
         double real = sRe, img = sIm;
+        int hash = point.hashCode();
         L:
         for (int i = 0; i < reps; i++){
-            variable[0].setValue(real);
-            variable[1].setValue(img);
-            Zahl[] tmp = function.evaluate();
-            real = tmp[0].getValue() + point[0];
-            img = tmp[1].getValue() + point[1];
+            variable[0].addValue(real, hash);
+            variable[1].addValue(img, hash);
+            //System.out.println(variable[0].getValue(hash));
+            Zahl[] tmp = function.evaluate(hash);
+            real = tmp[0].getValue(hash) + point[0];
+            img = tmp[1].getValue(hash) + point[1];
             if (Math.pow(real, 2)+Math.pow(img, 2) > border){
                 iter = i;
                 break L;
