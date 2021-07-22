@@ -3,8 +3,11 @@ package main;
 import function.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.opencv.core.Core;
 
 public class AppStart extends Application {
+
+    static {System.loadLibrary(Core.NATIVE_LIBRARY_NAME);}
 
     FractalFunction fractalFunction = new FractalFunction(this);
     FXMLLoad screen = new FXMLLoad("/main/FractalScreen.fxml", new FractalScreenCon(this));

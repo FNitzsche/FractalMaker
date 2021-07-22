@@ -1,10 +1,7 @@
 package function;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableStringValue;
-import jdk.tools.jaotc.Main;
 import main.AppStart;
-import main.FractalScreenCon;
 
 import java.util.ArrayList;
 

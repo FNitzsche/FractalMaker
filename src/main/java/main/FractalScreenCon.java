@@ -6,7 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.input.MouseEvent;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.videoio.VideoWriter;
 
 import javax.imageio.ImageIO;
 import javax.naming.Binding;
@@ -14,6 +20,7 @@ import javax.script.Bindings;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -156,26 +163,37 @@ public class FractalScreenCon {
         app.renderer.endRendering();
         stopPainting();
         app.renderer.renderImage(2160, 2160, true);
-        File theDir = new File("G:/ImageSaveFractalSecond");
+        File theDir = new File("G:/VideoSaveFractal");
         if (!theDir.exists()){
             theDir.mkdirs();
         }
+        String p = theDir.getAbsolutePath() + "\\fractal" + System.currentTimeMillis() + ".mp4";
+        VideoWriter videoWriter = new VideoWriter(p, VideoWriter.fourcc('x', '2','6','4'), 25, new Size(2160, 2160));
         for (int i = 0; i < app.reps; i++){
             minIt.setValue(i);
             iMin = (int)minIt.getValue();
             iMax = iMin+(int)itShow.getValue();
             Image img = app.renderer.getImage(iMin, iMax, 2160, 2160);
-            File outputFile = new File("G:/ImageSaveFractalSecond/FractalImg" + i + ".png");
-            BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
-            try {
-                ImageIO.write(bImage, "png", outputFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            videoWriter.write(imageToMat(img));
         }
+        videoWriter.release();
         System.out.println("saved");
         app.renderer.startRendering((int)canvas.getWidth(), (int)canvas.getHeight());
         startPainting();
+    }
+
+    public Mat imageToMat(Image image) {
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        byte[] buffer = new byte[width * height * 4];
+
+        PixelReader reader = image.getPixelReader();
+        WritablePixelFormat<ByteBuffer> format = WritablePixelFormat.getByteBgraInstance();
+        reader.getPixels(0, 0, width, height, format, buffer, 0, width * 4);
+
+        Mat mat = new Mat(height, width, CvType.CV_8UC4);
+        mat.put(0, 0, buffer);
+        return mat;
     }
 
 }
